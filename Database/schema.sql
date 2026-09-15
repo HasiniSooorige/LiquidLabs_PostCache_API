@@ -9,7 +9,7 @@ use PostCacheAPIDB;
 go
 
 create table dbo.PostCache (
-	Id int identity(1,1) primary key,
+	Id int not null primary key,
 	UserId int not null,
 	Title nvarchar(255) not null,
 	Body nvarchar(max) not null,
