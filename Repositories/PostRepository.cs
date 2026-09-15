@@ -53,17 +53,15 @@ public class PostRepository(IConfiguration config) : IPostRepository
     public async Task AddAsync(Post post)
     {
         const string sql = @"
-            INSERT INTO PostCache (Id, UserId, Title, Body, CreatedAt)
-            VALUES (@Id, @UserId, @Title, @Body, @CreatedAt)";
+            INSERT INTO PostCache (UserId, Title, Body)
+            VALUES (@UserId, @Title, @Body)";
 
         await using var conn = new SqlConnection(_connectionString);
         await using var cmd = new SqlCommand(sql, conn);
 
-        cmd.Parameters.AddWithValue("@Id", post.Id);
         cmd.Parameters.AddWithValue("@UserId", post.UserId);
         cmd.Parameters.AddWithValue("@Title", post.Title);
         cmd.Parameters.AddWithValue("@Body", post.Body);
-        cmd.Parameters.AddWithValue("@CreatedAt", post.CreatedAt);
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
