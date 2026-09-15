@@ -22,7 +22,7 @@ public class PostService(IPostRepository repo, IJsonPlaceholderClient api) : IPo
 
         var cachedIds = cached.Select(p => p.Id).ToHashSet();
         var externalData = await api.GetPostsAsync();
-        var missing = externalData.Where(p => cachedIds.Contains(p.Id)).ToList();
+        var missing = externalData.Where(p => !cachedIds.Contains(p.Id)).ToList();
 
         foreach (var post in missing)
             await repo.AddAsync(post);

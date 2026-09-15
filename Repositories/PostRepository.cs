@@ -38,7 +38,7 @@ public class PostRepository(IConfiguration config) : IPostRepository
 
     public async Task<Post?> GetByIdAsync(int id)
     {
-        const string sql = "SELECT Id, UserId, Title, Body, CreatedAt FROM Posts WHERE Id = @Id";
+        const string sql = "SELECT Id, UserId, Title, Body, CreatedAt FROM PostCache WHERE Id = @Id";
 
         await using var conn = new SqlConnection(_connectionString);
         await using var cmd = new SqlCommand(sql, conn);
@@ -53,8 +53,8 @@ public class PostRepository(IConfiguration config) : IPostRepository
     public async Task AddAsync(Post post)
     {
         const string sql = @"
-            INSERT INTO Posts (Id, UserId, Title, Body)
-            VALUES (@Id, @UserId, @Title, @Body)";
+            INSERT INTO PostCache (Id, UserId, Title, Body, CreatedAt)
+            VALUES (@Id, @UserId, @Title, @Body, @CreatedAt)";
 
         await using var conn = new SqlConnection(_connectionString);
         await using var cmd = new SqlCommand(sql, conn);
@@ -63,6 +63,7 @@ public class PostRepository(IConfiguration config) : IPostRepository
         cmd.Parameters.AddWithValue("@UserId", post.UserId);
         cmd.Parameters.AddWithValue("@Title", post.Title);
         cmd.Parameters.AddWithValue("@Body", post.Body);
+        cmd.Parameters.AddWithValue("@CreatedAt", post.CreatedAt);
 
         await conn.OpenAsync();
         await cmd.ExecuteNonQueryAsync();
