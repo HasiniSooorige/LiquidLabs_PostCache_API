@@ -8,13 +8,13 @@ public class JsonPlaceholderClient(HttpClient httpClient) : IJsonPlaceholderClie
 {
     public async Task<IEnumerable<Post>> GetPostsAsync()
     {
-        var res = await http.GetFromJsonAsync<List<Post>>("posts");
+        var res = await httpClient.GetFromJsonAsync<List<Post>>("posts");
         return res ?? [];
     }
 
     public async Task<Post?> GetPostByIdAsync(int id)
     {
-        var res = await http.GetAsync($"posts/{id}");
+        var res = await httpClient.GetAsync($"posts/{id}");
 
         if (res.StatusCode == HttpStatusCode.NotFound)
             return null;
